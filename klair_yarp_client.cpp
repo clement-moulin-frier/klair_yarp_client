@@ -50,17 +50,21 @@ int main(int argc, char * argv[])
 	Network yarp;
 	// Make two ports called /hello/in and /hello/out
 	// We'll send "Bottles" (a simple nested list container) between these ports
-	BufferedPort<Bottle> outPort;
-	bool ok = outPort.open("/klair_yarp_client/out");
+	BufferedPort<Bottle> inPort, outPort;
+	bool ok = inPort.open("/klair_yarp_client/expression:i");
+	ok = outPort.open("/klair_yarp_client/out");
 	if (!ok) {
 		fprintf(stderr, "Failed to create ports.\n");
 		fprintf(stderr, "Maybe you need to start a nameserver (run 'yarpserver')\n");
 		return 1;
 	}
 
-	while (!yarp.connect(outPort.getName(), "/read/in")) {
-		printf("Connecting...");
-	}
+	//while (!yarp.connect("/expression:o", inPort.getName())) {
+	//	printf("Connecting...");
+	//}
+
+
+
 
 	// RPC interface
 	unsigned char * pszUuid = NULL;
@@ -119,77 +123,90 @@ int main(int argc, char * argv[])
 			for (j = 0; j<10; j++) {
 				printf("%d:", j);
 				for (i = 0; i<KS_AUDIO_NUMCHAN; i++) printf("%g,", fbank[j*AUDIO_FRAME_SIZE + i]);
-				Bottle&out = outPort.prepare();
-				out.clear();
-				out.addString("En");
-				out.addDouble(fbank[j*AUDIO_FRAME_SIZE + KS_AUDIO_EN]);
-				printf("Sending %s\n", out.toString().c_str());
-				// send the message
-				outPort.write(true);
+				//Bottle&out = outPort.prepare();
+				//out.clear();
+				//out.addString("En");
+				//out.addDouble(fbank[j*AUDIO_FRAME_SIZE + KS_AUDIO_EN]);
+				//printf("Sending %s\n", out.toString().c_str());
+				//// send the message
+				//outPort.write(true);
 				printf("En=%g,", fbank[j*AUDIO_FRAME_SIZE + KS_AUDIO_EN]);
 				printf("Fx=%d,", (int)fbank[j*AUDIO_FRAME_SIZE + KS_AUDIO_FX]);
 				printf("\n");
 			}
 		}
 
-		if (KlairServerGetStatus() & 2) {
-			// camera is running - get a picture
-			printf("Getting video ...\n");
-			status = KlairServerGetVideo(curtime - 200, vframe);
-			printf("KlairServerGetVideo() returns %ld\n", status);
-			printf("vframe=\n");
-			HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
-			DWORD count;
-			// map image to size of console
-			for (i = 23; i >= 0; i--) {
-				for (j = 0; j<80; j++) {
-					int r = 0, g = 0, b = 0;
-					for (k = 0; k<10; k++)
-					for (l = 0; l<4; l++) {
-						b += vframe[3 * 320 * (10 * i + k) + 3 * (4 * j + l)];
-						g += vframe[3 * 320 * (10 * i + k) + 3 * (4 * j + l) + 1];
-						r += vframe[3 * 320 * (10 * i + k) + 3 * (4 * j + l) + 2];
-					}
-					int col = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
-					if (r >(40 * 127)) col |= BACKGROUND_RED;
-					if (g >(40 * 127)) col |= BACKGROUND_GREEN;
-					if (b > (40 * 127)) col |= BACKGROUND_BLUE;
-					SetConsoleTextAttribute(hStdOut, col);
-					WriteConsole(hStdOut, " ", 1, &count, NULL);
-				}
-			}
-			SetConsoleTextAttribute(hStdOut, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-			printf("\n");
-		}
+		//if (KlairServerGetStatus() & 2) {
+		//	// camera is running - get a picture
+		//	printf("Getting video ...\n");
+		//	status = KlairServerGetVideo(curtime - 200, vframe);
+		//	printf("KlairServerGetVideo() returns %ld\n", status);
+		//	printf("vframe=\n");
+		//	HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+		//	DWORD count;
+		//	// map image to size of console
+		//	for (i = 23; i >= 0; i--) {
+		//		for (j = 0; j<80; j++) {
+		//			int r = 0, g = 0, b = 0;
+		//			for (k = 0; k<10; k++)
+		//			for (l = 0; l<4; l++) {
+		//				b += vframe[3 * 320 * (10 * i + k) + 3 * (4 * j + l)];
+		//				g += vframe[3 * 320 * (10 * i + k) + 3 * (4 * j + l) + 1];
+		//				r += vframe[3 * 320 * (10 * i + k) + 3 * (4 * j + l) + 2];
+		//			}
+		//			int col = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
+		//			if (r >(40 * 127)) col |= BACKGROUND_RED;
+		//			if (g >(40 * 127)) col |= BACKGROUND_GREEN;
+		//			if (b > (40 * 127)) col |= BACKGROUND_BLUE;
+		//			SetConsoleTextAttribute(hStdOut, col);
+		//			WriteConsole(hStdOut, " ", 1, &count, NULL);
+		//		}
+		//	}
+		//	SetConsoleTextAttribute(hStdOut, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+		//	printf("\n");
+		//}
 
 		if (KlairServerGetStatus() & 4) {
-			// head is running - give it a random expression
-			switch (rand() % 6) {
-			case 0:
-				printf("Set expression happy\n");
-				KlairServerQueueExpress(0, expression_happy);
-				break;
-			case 1:
-				printf("Set expression confused\n");
-				KlairServerQueueExpress(0, expression_confused);
-				break;
-			case 2:
-				printf("Set expression bored\n");
-				KlairServerQueueExpress(0, expression_bored);
-				break;
-			case 3:
-				printf("Set expression angry\n");
-				KlairServerQueueExpress(0, expression_angry);
-				break;
-			case 4:
-				printf("Set expression sad\n");
-				KlairServerQueueExpress(0, expression_sad);
-				break;
-			case 5:
-				printf("Set expression sad2\n");
-				KlairServerQueueExpress(0, expression_sad2);
-				break;
+			
+			std::string expr;
+			while (true) {
+				Bottle* b = inPort.read();
+				Value v = b->get(0);
+				int i = v.asInt();
+
+
+				switch (i) {
+					case 0:
+						printf("Set expression happy\n");
+						KlairServerQueueExpress(0, expression_happy);
+						break;
+					case 1:
+						printf("Set expression confused\n");
+						KlairServerQueueExpress(0, expression_confused);
+						break;
+					case 2:
+						printf("Set expression bored\n");
+						KlairServerQueueExpress(0, expression_bored);
+						break;
+					case 3:
+						printf("Set expression angry\n");
+						KlairServerQueueExpress(0, expression_angry);
+						break;
+					case 4:
+						printf("Set expression sad\n");
+						KlairServerQueueExpress(0, expression_sad);
+						break;
+					case 5:
+						printf("Set expression sad2\n");
+						KlairServerQueueExpress(0, expression_sad2);
+						break;
+
+				}
+
+
 			}
+				
+
 		}
 
 		if (KlairServerGetStatus() & 8) {
