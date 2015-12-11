@@ -27,19 +27,32 @@
 using namespace yarp::os;
 
 
-// some sample facial expressions
-float	expression_middling[EXPRESS_SIZE] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // neutral
-float	expression_happy[EXPRESS_SIZE] = { 1, 1, 1, 0, 0, 0, 0.5f, 0.5f, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0 }; // happiness
-float	expression_confused[EXPRESS_SIZE] = { 0, 1, 1, 0, -.2f, -.2f, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // confusion
-float	expression_bored[EXPRESS_SIZE] = { 1, 0, 0, 0, .2f, .2f, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // boredom
-float	expression_angry[EXPRESS_SIZE] = { 0, 0, 0, 2, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0 }; // anger
-float	expression_sad[EXPRESS_SIZE] = { 2, 0, 0, 0, .2f, .2f, 0, 0, 0, 0, 0, 0, 0, 0, 0, .5f, 2, 0, 0, .25f, .25f, 0, 0 }; // sadness 1
-float	expression_sad2[EXPRESS_SIZE] = { 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, .25f, .25f, 0, 0 }; // sadness 2
-
-// some sample vowel configurations
-float	avowel[VTRACT_SIZE] = { 0.0f, 1.0f, 0.0f, 0.0f, 0.3f, 0.0f, 0.0f, 0.0f, 0.0f, -0.3f, 0.0f, 0.5f };
-float	ivowel[VTRACT_SIZE] = { 0.23f, -0.3f, 0.4f, 0.0f, -0.06f, -0.63f, 0.0f, 0.0f, 0.0f, -0.3f, 0.0f, 0.5f };
-float	uvowel[VTRACT_SIZE] = { 0.23f, 0.5f, 0.57f, 0.0f, -0.23f, 0.87f, 0.0f, 0.0f, 0.0f, -0.3f, 0.0f, 0.5f };
+// some sample facial expressions
+
+float	expression_middling[EXPRESS_SIZE] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // neutral
+
+float	expression_happy[EXPRESS_SIZE] = { 1, 1, 1, 0, 0, 0, 0.5f, 0.5f, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0 }; // happiness
+
+float	expression_confused[EXPRESS_SIZE] = { 0, 1, 1, 0, -.2f, -.2f, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // confusion
+
+float	expression_bored[EXPRESS_SIZE] = { 1, 0, 0, 0, .2f, .2f, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // boredom
+
+float	expression_angry[EXPRESS_SIZE] = { 0, 0, 0, 2, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0 }; // anger
+
+float	expression_sad[EXPRESS_SIZE] = { 2, 0, 0, 0, .2f, .2f, 0, 0, 0, 0, 0, 0, 0, 0, 0, .5f, 2, 0, 0, .25f, .25f, 0, 0 }; // sadness 1
+
+float	expression_sad2[EXPRESS_SIZE] = { 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, .25f, .25f, 0, 0 }; // sadness 2
+
+
+
+// some sample vowel configurations
+
+float	avowel[VTRACT_SIZE] = { 0.0f, 1.0f, 0.0f, 0.0f, 0.3f, 0.0f, 0.0f, 0.0f, 0.0f, -0.3f, 0.0f, 0.5f };
+
+float	ivowel[VTRACT_SIZE] = { 0.23f, -0.3f, 0.4f, 0.0f, -0.06f, -0.63f, 0.0f, 0.0f, 0.0f, -0.3f, 0.0f, 0.5f };
+
+float	uvowel[VTRACT_SIZE] = { 0.23f, 0.5f, 0.57f, 0.0f, -0.23f, 0.87f, 0.0f, 0.0f, 0.0f, -0.3f, 0.0f, 0.5f };
+
 float	relax[VTRACT_SIZE] = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.5f };
 
 
@@ -50,9 +63,10 @@ int main(int argc, char * argv[])
 	Network yarp;
 	// Make two ports called /hello/in and /hello/out
 	// We'll send "Bottles" (a simple nested list container) between these ports
-	BufferedPort<Bottle> inPort, outPort;
-	bool ok = inPort.open("/klair_yarp_client/expression:i");
-	ok = outPort.open("/klair_yarp_client/out");
+	BufferedPort<Bottle> inExpressionPort, inVocalTractPort, outPort;
+	bool ok = inExpressionPort.open("/klair_yarp_client/expression:i");
+	ok = ok && inVocalTractPort.open("/klair_yarp_client/vocal_tract:i");
+	ok = ok && outPort.open("/klair_yarp_client/out");
 	if (!ok) {
 		fprintf(stderr, "Failed to create ports.\n");
 		fprintf(stderr, "Maybe you need to start a nameserver (run 'yarpserver')\n");
@@ -62,9 +76,6 @@ int main(int argc, char * argv[])
 	//while (!yarp.connect("/expression:o", inPort.getName())) {
 	//	printf("Connecting...");
 	//}
-
-
-
 
 	// RPC interface
 	unsigned char * pszUuid = NULL;
@@ -106,7 +117,7 @@ int main(int argc, char * argv[])
 	// wrap calls in exception handler
 	//RpcTryExcept
 	//{
-		printf("Getting status ...\n");
+		printf("Getting status .. (check that Klair Server is running.\n");
 		status = KlairServerGetStatus();
 		printf("KlairServerGetStatus() returns %ld\n", status);
 
@@ -114,27 +125,27 @@ int main(int argc, char * argv[])
 		curtime = KlairServerGetTime();
 		printf("KlairServerGetTime() returns %ld\n", curtime);
 
-		if (KlairServerGetStatus() & 1) {
-			// audio is running - get some
-			printf("Getting audio ...\n");
-			status = KlairServerGetAudio(curtime - 200, fbank);
-			printf("KlairServerGetAudio() returns %ld\n", status);
-			printf("fbank=\n");
-			for (j = 0; j<10; j++) {
-				printf("%d:", j);
-				for (i = 0; i<KS_AUDIO_NUMCHAN; i++) printf("%g,", fbank[j*AUDIO_FRAME_SIZE + i]);
-				//Bottle&out = outPort.prepare();
-				//out.clear();
-				//out.addString("En");
-				//out.addDouble(fbank[j*AUDIO_FRAME_SIZE + KS_AUDIO_EN]);
-				//printf("Sending %s\n", out.toString().c_str());
-				//// send the message
-				//outPort.write(true);
-				printf("En=%g,", fbank[j*AUDIO_FRAME_SIZE + KS_AUDIO_EN]);
-				printf("Fx=%d,", (int)fbank[j*AUDIO_FRAME_SIZE + KS_AUDIO_FX]);
-				printf("\n");
-			}
-		}
+		//if (KlairServerGetStatus() & 1) {
+		//	// audio is running - get some
+		//	printf("Getting audio ...\n");
+		//	status = KlairServerGetAudio(curtime - 200, fbank);
+		//	printf("KlairServerGetAudio() returns %ld\n", status);
+		//	printf("fbank=\n");
+		//	for (j = 0; j<10; j++) {
+		//		printf("%d:", j);
+		//		for (i = 0; i<KS_AUDIO_NUMCHAN; i++) printf("%g,", fbank[j*AUDIO_FRAME_SIZE + i]);
+		//		//Bottle&out = outPort.prepare();
+		//		//out.clear();
+		//		//out.addString("En");
+		//		//out.addDouble(fbank[j*AUDIO_FRAME_SIZE + KS_AUDIO_EN]);
+		//		//printf("Sending %s\n", out.toString().c_str());
+		//		//// send the message
+		//		//outPort.write(true);
+		//		printf("En=%g,", fbank[j*AUDIO_FRAME_SIZE + KS_AUDIO_EN]);
+		//		printf("Fx=%d,", (int)fbank[j*AUDIO_FRAME_SIZE + KS_AUDIO_FX]);
+		//		printf("\n");
+		//	}
+		
 
 		//if (KlairServerGetStatus() & 2) {
 		//	// camera is running - get a picture
@@ -166,82 +177,78 @@ int main(int argc, char * argv[])
 		//	printf("\n");
 		//}
 
-		if (KlairServerGetStatus() & 4) {
-			
-			std::string expr;
-			while (true) {
-				Bottle* b = inPort.read();
-				Value v = b->get(0);
-				int i = v.asInt();
+while (true) {
+	if (KlairServerGetStatus() & 4) {
+
+		std::string expr;
+
+		Bottle* b = inExpressionPort.read(false);
+		if (b != NULL) {
+			printf("Send an expression\n");
+
+			Value v = b->get(0);
+			int i = v.asInt();
 
 
-				switch (i) {
-					case 0:
-						printf("Set expression happy\n");
-						KlairServerQueueExpress(0, expression_happy);
-						break;
-					case 1:
-						printf("Set expression confused\n");
-						KlairServerQueueExpress(0, expression_confused);
-						break;
-					case 2:
-						printf("Set expression bored\n");
-						KlairServerQueueExpress(0, expression_bored);
-						break;
-					case 3:
-						printf("Set expression angry\n");
-						KlairServerQueueExpress(0, expression_angry);
-						break;
-					case 4:
-						printf("Set expression sad\n");
-						KlairServerQueueExpress(0, expression_sad);
-						break;
-					case 5:
-						printf("Set expression sad2\n");
-						KlairServerQueueExpress(0, expression_sad2);
-						break;
-
-				}
-
-
+			switch (i) {
+			case 0:
+				printf("Set expression happy\n");
+				KlairServerQueueExpress(0, expression_happy);
+				break;
+			case 1:
+				printf("Set expression confused\n");
+				KlairServerQueueExpress(0, expression_confused);
+				break;
+			case 2:
+				printf("Set expression bored\n");
+				KlairServerQueueExpress(0, expression_bored);
+				break;
+			case 3:
+				printf("Set expression angry\n");
+				KlairServerQueueExpress(0, expression_angry);
+				break;
+			case 4:
+				printf("Set expression sad\n");
+				KlairServerQueueExpress(0, expression_sad);
+				break;
+			case 5:
+				printf("Set expression sad2\n");
+				KlairServerQueueExpress(0, expression_sad2);
+				break;
 			}
-				
-
 		}
 
-		if (KlairServerGetStatus() & 8) {
-			// tract is running - send a random vowel gesture
+
+
+
+	}
+
+
+
+	if (KlairServerGetStatus() & 8) {
+
+		float articulators[VTRACT_SIZE];
+		int delay;
+
+		Bottle* b = inVocalTractPort.read(false);
+		if (b != NULL) {
 			printf("Send a tract gesture\n");
-			switch (rand() % 3) {
-			case 0:
-				memcpy(vtpars, avowel, sizeof(vtpars));
-				break;
-			case 1:
-				memcpy(vtpars, ivowel, sizeof(vtpars));
-				break;
-			case 2:
-				memcpy(vtpars, uvowel, sizeof(vtpars));
-				break;
+			
+			for (int i = 0; i < b->size() - 1; i++) {
+				articulators[i] = b->get(i).asDouble();
+				printf("ART%d = %f ; ", i, articulators[i]);
 			}
-			KlairServerQueueVTract(0, vtpars);
-			// now close lips
-			vtpars[KS_TRACT_LA] = -1.0f;
-			KlairServerQueueVTract(250, vtpars);
-			// now open them again into another vowel
-			switch (rand() % 3) {
-			case 0:
-				memcpy(vtpars, avowel, sizeof(vtpars));
-				break;
-			case 1:
-				memcpy(vtpars, ivowel, sizeof(vtpars));
-				break;
-			case 2:
-				memcpy(vtpars, uvowel, sizeof(vtpars));
-				break;
-			}
-			vtpars[KS_TRACT_FX] = -1.0f;
-			KlairServerQueueVTract(350, vtpars);
+			delay = b->get(b->size() - 1).asInt();
+			printf("Delay = %d", delay);
+			printf("\n");
+
+			memcpy(vtpars, articulators, sizeof(vtpars));
+
+			KlairServerQueueVTract(delay, vtpars);
 		}
+	}
+
+}
 	//}
 	//RpcExcept(1)
 	//{
